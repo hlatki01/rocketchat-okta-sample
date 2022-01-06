@@ -11,9 +11,9 @@ if (fs.existsSync(TESTENV)) {
   });
 }
 
-var ISSUER = process.env.ISSUER || 'https://{yourOktaDomain}.com/oauth2/default';
-var CLIENT_ID = process.env.CLIENT_ID || '{clientId}';
-var CLIENT_SECRET = process.env.CLIENT_SECRET || '{clientSecret}';
+var ISSUER = process.env.ISSUER || 'https://dev-20217700.okta.com/oauth2/default';
+var CLIENT_ID = process.env.CLIENT_ID || '0oa3ipobecjUcrtWd5d7';
+var CLIENT_SECRET = process.env.CLIENT_SECRET || 'MR_pK-2wD7jN1EIFtqhwLgdlNzB0BkLw1oZ14_HW';
 var SPA_CLIENT_ID = process.env.SPA_CLIENT_ID || '{spaClientId}';
 var OKTA_TESTING_DISABLEHTTPSCHECK = process.env.OKTA_TESTING_DISABLEHTTPSCHECK ? true : false;
 

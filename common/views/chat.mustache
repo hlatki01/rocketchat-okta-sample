@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {{>head}}
+  </head>
+  <body id="samples">
+
+    {{>menu}}
+
+    <div id="content" class="ui padded grid relaxed">
+      <div id="doc" class="column eight wide">
+        <div class="doc-overview">
+          <h2 class="ui dividing header" data-se="overview-doc-header">
+            Rocket.chat Embeeded Chat
+          </h2>
+          <p>Hello, {{userinfo.name}}. Here are the chats that you can see:
+          </p>
+        </div>
+        <div class="chat">
+        <iframe id="rcChannel"
+        src="https://chat.lgrocket.ga/channel/general/?layout=embedded"
+        title="rcChannel" style="height: 600px; width: 100%"
+        ></iframe>
+        </div>              
+      </div>
+      {{>server-config}}
+
+    </div>
+  </body>
+  <script>
+    function authenticateIFrame() {
+        document.querySelector('iframe').contentWindow.postMessage({
+          externalCommand: 'login-with-token',
+          token: '{{userToken}}'
+        }, '*');
+    }
+
+    window.onload = function () {
+        authenticateIFrame();
+    };
+  </script>
+</html>

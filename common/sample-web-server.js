@@ -17,6 +17,7 @@
  */
 
 const express = require('express');
+const axios = require('axios');
 const session = require('express-session');
 const mustacheExpress = require('mustache-express');
 const path = require('path');
@@ -24,6 +25,12 @@ const { ExpressOIDC } = require('@okta/oidc-middleware');
 
 const templateDir = path.join(__dirname, '..', 'common', 'views');
 const frontendDir = path.join(__dirname, '..', 'common', 'assets');
+
+const rocketConfig = {
+  url: 'https://chat.lgrocket.ga',
+  token: 'kYys5F3GDS9Yx-vZuXRneeNrGGMRA3X-i9K508PZQ5u',
+  userId: 'hPfCL7truC7T8XBux'
+}
 
 module.exports = function SampleWebServer(sampleConfig, extraOidcOptions, homePageTemplateName) {
 
@@ -81,6 +88,66 @@ module.exports = function SampleWebServer(sampleConfig, extraOidcOptions, homePa
       userinfo: userinfo,
       attributes
     });
+  });
+
+  
+  async function checkUser(userinfo) {
+    // Get the users list
+    try {
+      let result = await axios.get(`${rocketConfig.url}/api/v1/users.list`, {
+      headers: {
+        'X-Auth-Token': rocketConfig.token,
+        'X-User-Id': rocketConfig.userId
+      }
+    })
+    // Check if the user exists
+      const objFound = result.data.users.find(obj => obj.username === userinfo.email);
+      if(result.status == 200){
+        if(objFound){
+
+          const data = {
+            'userId': objFound._id
+          }
+          // Create the token to access RC application
+          let createToken = await axios.post(`${rocketConfig.url}/api/v1/users.createToken`, data, {
+            headers: {
+              'X-Auth-Token': rocketConfig.token,
+              'X-User-Id': rocketConfig.userId
+                  }
+          })          
+          return createToken
+        }
+        else{
+          console.log('no user found, user registering logic must be created')
+        }
+      }    
+    }
+    catch (err) {
+        console.error(err);
+    }
+  }
+
+  function chatRender(result, res, userinfo) {
+    // Render the chat and set the RocketChat Token that will be used to login into the iframe
+    const attributes = Object.entries(userinfo);
+    res.render('chat', {
+      isLoggedIn: !!userinfo,
+      userinfo: userinfo,
+      attributes,
+      userToken: result.data.authToken
+
+    });
+
+  }
+
+  app.get('/chat', oidc.ensureAuthenticated(), (req, res) => {
+    // Convert the userinfo object into an attribute array, for rendering with mustache
+    const userinfo = req.userContext && req.userContext.userinfo;
+    let test;
+    
+    checkUser(userinfo)
+    .then(result => chatRender(result.data, res, userinfo))
+
   });
 
   oidc.on('ready', () => {
