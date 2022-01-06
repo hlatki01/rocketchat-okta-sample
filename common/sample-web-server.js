@@ -27,9 +27,9 @@ const templateDir = path.join(__dirname, '..', 'common', 'views');
 const frontendDir = path.join(__dirname, '..', 'common', 'assets');
 
 const rocketConfig = {
-  url: 'https://chat.lgrocket.ga',
-  token: 'kYys5F3GDS9Yx-vZuXRneeNrGGMRA3X-i9K508PZQ5u',
-  userId: 'hPfCL7truC7T8XBux'
+  url: 'https://',
+  token: '',
+  userId: ''
 }
 
 module.exports = function SampleWebServer(sampleConfig, extraOidcOptions, homePageTemplateName) {
